@@ -69,9 +69,9 @@ public class TrackingService extends Service {
         // Create the persistent notification
 
 
-        Notification.Builder builder = null;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            builder = new Notification.Builder(this, chanID)//Notification.Builder(this)
+        NotificationCompat.Builder
+     //   if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            builder = new NotificationCompat.Builder(this, chanID)//Notification.Builder(this)
                     .setContentTitle(getString(R.string.app_name))
                     .setContentText("the")
 
@@ -81,10 +81,8 @@ public class TrackingService extends Service {
                     .setOngoing(true)
                     .setContentIntent(broadcastIntent)
                     .setSmallIcon(R.drawable.common_google_signin_btn_icon_dark);
-        }
+
         startForeground(1025, builder.build());
-
-
 
     }
 
@@ -214,7 +212,7 @@ public class TrackingService extends Service {
 
         request.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         FusedLocationProviderClient client = LocationServices.getFusedLocationProviderClient(this);
-        final String path = "Bus Location";
+        final String path = "Car Location/LATLONG/Bus 123";
         int permission = ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION);
 
