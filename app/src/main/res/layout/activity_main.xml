@@ -36,6 +36,45 @@
         android:layout_height="wrap_content"
         android:text="Confirm Car"/>
 
+    <TextView
+        android:layout_marginTop="15dp"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:id="@+id/carNameTV"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="16dp"
+        android:text="Car"
+        android:textSize="30sp" />
+
+
+   <LinearLayout
+       android:layout_width="match_parent"
+       android:orientation="horizontal"
+       android:weightSum="100"
+       android:layout_height="wrap_content">
+
+
+       <Button
+         android:text="Pick Up"
+           android:id="@+id/pickup"
+           android:layout_weight="50"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content" />
+       <Button
+           android:id="@+id/dropoff"
+           android:text="drop off"
+           android:layout_weight="50"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content" />
+
+   </LinearLayout>
+
+    <Button
+        android:text="refresh"
+        android:id="@+id/refresh"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
 
 
