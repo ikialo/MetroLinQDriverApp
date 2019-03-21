@@ -126,7 +126,6 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 // send a signal to firebase. this signal will be picked up by client app to clear out map
-                //
                 mDatabase.child("Map Clear").setValue(true);
 
                 dropoff.setEnabled(false);
