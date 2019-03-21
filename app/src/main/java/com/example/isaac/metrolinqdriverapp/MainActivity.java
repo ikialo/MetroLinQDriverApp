@@ -1,6 +1,7 @@
 package com.example.isaac.metrolinqdriverapp;
 
 import android.Manifest;
+import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -23,10 +24,18 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.location.Geofence;
+import com.google.android.gms.location.GeofencingClient;
+import com.google.android.gms.location.GeofencingRequest;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -39,11 +48,11 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
 
-    Button complete_btn, accept_btn;
+    Button startpickup, dropoff;
     AutoCompleteTextView editText;
     private LocationManager locationManager;
     private LocationListener locationListener;
-    private DatabaseReference mDatabase,clientNameDB,requestDB_name;
+    private DatabaseReference mDatabase;
     private TextView carName;
 
     private Double lat, lon;
@@ -51,7 +60,13 @@ public class MainActivity extends AppCompatActivity {
     private List<String> clientList;
     String car = "noCar";
 
+    private RadioGroup radioGroup;
+    private RadioButton radioButton;
+
     private static final int PERMISSIONS_REQUEST = 100;
+    private GeofencingClient geofencingClient;
+    private List<Geofence> geofenceList;
+    private PendingIntent geofencePendingIntent;
 
 
     @Override
@@ -61,114 +76,93 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        mDatabase = FirebaseDatabase.getInstance().getReference("Car Location");
-
-
-
-        accept_btn = findViewById(R.id.signIn);
-        editText = findViewById(R.id.actv);
-        carName = findViewById(R.id.carNameTV);
-
-        /// change this data base with the one you use to store all client names
-        clientNameDB = FirebaseDatabase.getInstance().getReference("Cars");
-
-        clientList = new ArrayList<>();
+        mDatabase = FirebaseDatabase.getInstance().getReference("ClearMap");
 
 
 
 
 
-
-        clientNameDB.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                clientList.clear();
-
-                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()){
-
-                    if (postSnapshot!= null ) {
-
-                            String name = postSnapshot.child("plateNumber").getValue().toString();
-                            clientList.add(name);
-
-                    }
-
-                }
+        radioGroup = findViewById(R.id.radio_location);
 
 
-            }
+        Button submit = findViewById(R.id.submit);
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
-        final ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_expandable_list_item_1,clientList);
-        editText.setAdapter(adapter);
-
-
-
-        accept_btn.setOnClickListener(new View.OnClickListener() {
+        submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                clientNameDB.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                int selectedId = radioGroup.getCheckedRadioButtonId();
 
-                        for (DataSnapshot postSnapshot: dataSnapshot.getChildren()){
+                // find the radiobutton by returned id
+                radioButton = (RadioButton) findViewById(selectedId);
 
-                            if (postSnapshot.child("plateNumber").getValue().equals(editText.getText().toString())){
-
-                                car = editText.getText().toString();
-
-                                clientNameDB.child(postSnapshot.getKey()).child("inUse").setValue("true");
-
-
-                                carName.setText(editText.getText());
-                                break;
-
-                            }
-                            else if(editText.getText().toString().equals("noCar")){
-
-                                if (postSnapshot.child("plateNumber").getValue().equals(car)){
-
-                                    clientNameDB.child(postSnapshot.getKey()).child("inUse").setValue("false");
-
-                                }
-
-                                car = "noCar";
-
-                            }
-                            else{
-
-
-                                car = "noCar";
-                                carName.setText(car);
-                            }
-
-
-                        }
-
-
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });
-//
-//                for (int i=0; i<clientList.size(); i++ ){
-//
-//
-//
-//
-//                }
+                TextView pickUploaction = findViewById(R.id.pickUpLocation);
+                pickUploaction.setText(radioButton.getText().toString());
             }
         });
+
+
+
+
+
+//        accept_btn = findViewById(R.id.signIn);
+//        editText = findViewById(R.id.actv);
+        carName = findViewById(R.id.carNameTV);
+//        pickup = findViewById(R.id.pickup);
+        dropoff = findViewById(R.id.dropoff);
+        startpickup = findViewById(R.id.startPickup);
+
+        startpickup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dropoff.setEnabled(true);
+                startpickup.setEnabled(false);
+                mDatabase.child("Map Clear").setValue(false);
+            }
+        });
+
+        dropoff.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                // send a signal to firebase. this signal will be picked up by client app to clear out map
+                mDatabase.child("Map Clear").setValue(true);
+
+                dropoff.setEnabled(false);
+                startpickup.setEnabled(true);
+            }
+        });
+
+//        /// change this data base with the one you use to store all client names
+//        clientNameDB = FirebaseDatabase.getInstance().getReference("Cars");
+
+//        clientList = new ArrayList<>();
+//
+//
+//        clientNameDB.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                clientList.clear();
+//
+//                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()){
+//
+//                    if (postSnapshot!= null ) {
+//
+//                            String name = postSnapshot.child("plateNumber").getValue().toString();
+//                            clientList.add(name);
+//
+//                    }
+//
+//                }
+//
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
 
 
         LocationManager lm = (LocationManager) getSystemService(LOCATION_SERVICE);
@@ -196,94 +190,70 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
+
+        geofenceList = new ArrayList<>();
+        geofencingClient = LocationServices.getGeofencingClient(this);
+
+        geofenceList.add(new Geofence.Builder()
+                // Set the request ID of the geofence. This is a string to identify this
+                // geofence.
+                .setRequestId("kaeme_st")
+
+                .setCircularRegion(
+                        -9.455748, 147.185747
+                        ,50
+                )
+                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER |
+                        Geofence.GEOFENCE_TRANSITION_EXIT)
+                .setExpirationDuration(10000)
+                .build());
+
+
+
+//        getGeofencingRequest();
 //
+//        geofencingClient.addGeofences(getGeofencingRequest(), getGeofencePendingIntent())
+//                .addOnSuccessListener(this, new OnSuccessListener<Void>() {
+//                    @Override
+//                    public void onSuccess(Void aVoid) {
+//                        // Geofences added
+//                        // ...
+//                    }
+//                })
+//                .addOnFailureListener(this, new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception e) {
+//                        // Failed to add geofences
+//                        // ...
+//                    }
+//                });
 //
-//        locationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
-//
-//        locationListener = new LocationListener() {
-//            @Override
-//            public void onLocationChanged(Location location) {
-//
-//
-//                Log.d("WHICH_CAR", "onLocationChanged: "+ car);
-//                if (!car.equals("noCar")) {
-//
-//
-//                    carName.setText(location.getLatitude()+","+location.getLongitude());
-//                    LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-//
-//                    mDatabase.child("LATLONG").child(car).setValue(latLng);
-//
-//                }
-//
-//            }
-//
-//            @Override
-//            public void onStatusChanged(String provider, int status, Bundle extras) {
-//
-//            }
-//
-//            @Override
-//            public void onProviderEnabled(String provider) {
-//
-//            }
-//
-//            @Override
-//            public void onProviderDisabled(String provider) {
-//
-//            }
-//        };
-//
-//        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-//            // TODO: Consider calling
-//            //    ActivityCompat#requestPermissions
-//            // here to request the missing permissions, and then overriding
-//            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-//            //                                          int[] grantResults)
-//            // to handle the case where the user grants the permission. See the documentation
-//            // for ActivityCompat#requestPermissions for more details.
-//
-//            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.ACCESS_FINE_LOCATION},1);
-//            return;
-//        }
-//        else{
-//
-//        }
-//        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-//
-////        complete_btn.setOnClickListener(this);
-////        accept_btn.setOnClickListener(this);
+
 
     }
 
-//    @Override
-//    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-//
-//        if (grantResults.length >0 && grantResults[0] ==PackageManager.PERMISSION_GRANTED){
-//
-//
-//            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)== PackageManager.PERMISSION_GRANTED){
-//                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-//
-//            }
-//        }
-//    }
-//
-//    @Override
-//    public void onClick(View v) {
-//
-//        if(v == complete_btn){
-//
-//            checkLocation = true;
-//
-//
-//            //startService(new Intent(this, MetroService.class));
-//        }else if(v == accept_btn){
-//            // stopService(new Intent(this, MetroService.class));
-//        }
-//
-//    }
+    private GeofencingRequest getGeofencingRequest() {
+        GeofencingRequest.Builder builder = new GeofencingRequest.Builder();
+        builder.setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER);
+        builder.addGeofences(geofenceList);
+        return builder.build();
+    }
+
+    private PendingIntent getGeofencePendingIntent() {
+        // Reuse the PendingIntent if we already have it.
+        if (geofencePendingIntent != null) {
+            return geofencePendingIntent;
+        }
+        Intent intent = new Intent(this, GeoFenceTransitionsIntentService.class);
+        // We use FLAG_UPDATE_CURRENT so that we get the same pending intent back when
+        // calling addGeofences() and removeGeofences().
+        geofencePendingIntent = PendingIntent.getService(this, 0, intent, PendingIntent.
+                FLAG_UPDATE_CURRENT);
+        return geofencePendingIntent;
+    }
+
+
+
 
 
     @Override

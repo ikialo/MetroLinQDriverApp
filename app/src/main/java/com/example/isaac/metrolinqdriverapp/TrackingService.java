@@ -13,6 +13,8 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.IBinder;
 import android.support.annotation.RequiresApi;
@@ -21,6 +23,9 @@ import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.Geofence;
+import com.google.android.gms.location.GeofencingClient;
+import com.google.android.gms.location.GeofencingRequest;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
@@ -29,8 +34,14 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class TrackingService extends Service {
     private static final String TAG = TrackingService.class.getSimpleName();
+
+
+
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -41,10 +52,15 @@ public class TrackingService extends Service {
     public void onCreate() {
         super.onCreate();
 
-       // startForeground(101, getNotification());
+
+
+        // startForeground(101, getNotification());
         buildNotification();
         requestLocationUpdates();
     }
+
+
+
 
 //Create the persistent notification//
 
@@ -69,43 +85,28 @@ public class TrackingService extends Service {
         // Create the persistent notification
 
 
+        Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+
         NotificationCompat.Builder
      //   if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             builder = new NotificationCompat.Builder(this, chanID)//Notification.Builder(this)
                     .setContentTitle(getString(R.string.app_name))
-                    .setContentText("the")
+                    .setContentText("Determining Metro Driver Location")
 
 
     //Make this notification ongoing so it can’t be dismissed by the user//
 
+                    .setSound(alarmSound)
                     .setOngoing(true)
                     .setContentIntent(broadcastIntent)
                     .setSmallIcon(R.drawable.common_google_signin_btn_icon_dark);
+
+
 
         startForeground(1025, builder.build());
 
     }
 
-    //Create the persistent notification//
-
-//    private void buildNotification() {
-//        String stop = "stop";
-//        registerReceiver(stopReceiver, new IntentFilter(stop));
-//        PendingIntent broadcastIntent = PendingIntent.getBroadcast(
-//                this, 0, new Intent(stop), PendingIntent.FLAG_UPDATE_CURRENT);
-//
-//// Create the persistent notification//
-//        Notification.Builder builder = new Notification.Builder(this)
-//                .setContentTitle(getString(R.string.app_name))
-//                .setContentText("tracking")
-//
-////Make this notification ongoing so it can’t be dismissed by the user//
-//
-//                .setOngoing(true)
-//                .setContentIntent(broadcastIntent)
-//                .setSmallIcon(R.drawable.ic_launcher_background);
-//        startForeground(1, builder.build());
-//    }
 
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -140,64 +141,6 @@ public class TrackingService extends Service {
     };
 
 
-//    private Notification getNotification() {
-//        NotificationChannel channel = null;
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//            channel = new NotificationChannel(
-//                    "channel_01",
-//                    "My Channel",
-//                    NotificationManager.IMPORTANCE_DEFAULT
-//            );
-//        }
-//
-//        NotificationManager notificationManager = null;
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//            notificationManager = getSystemService(NotificationManager.class);
-//
-//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//                notificationManager.createNotificationChannel(channel);
-//            }
-//        }
-//
-//        Notification.Builder builder = null;
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//            builder = new Notification.Builder(getApplicationContext(), "channel_01");
-//        }
-//
-//        return builder.build();
-//    }
-
-    private void loginToFirebase() {
-
-//Authenticate with Firebase, using the email and password we created earlier//
-
-        // String email = getString(R.string.test_email);
-        //String password = getString(R.string.test_password);
-
-//Call OnCompleteListener if the user is signed in successfully//
-
-
-//        FirebaseAuth.getInstance().signInWithEmailAndPassword(
-//                email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-//            @Override
-//            public void onComplete(Task<AuthResult> task) {
-
-//If the user has been authenticated...//
-
-        //   if (task.isSuccessful()) {
-
-//...then call requestLocationUpdates//
-
-        requestLocationUpdates();
-        //  } else {
-
-//If sign in fails, then log the error//
-
-        //       Log.d(TAG, "Firebase authentication failed");
-        //     }
-        // }
-        //  });
-    }
 
 //Initiate the request to track the device's location//
 
