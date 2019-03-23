@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:padding="15dp"
+    android:background="@drawable/top_block"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
@@ -38,14 +39,13 @@
         <!--android:text="Confirm Car"/>-->
 
     <TextView
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="45dp"
         android:layout_gravity="center"
         android:gravity="center"
         android:id="@+id/carNameTV"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingBottom="16dp"
-        android:text="BUS TRANSFER"
         android:textSize="30sp" />
 
 
@@ -104,6 +104,11 @@
         <RadioButton
             android:text="Cuthberthson Haus Town"
             android:id="@+id/cuthberthson"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <RadioButton
+            android:text="No PickUp"
+            android:id="@+id/NA"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
