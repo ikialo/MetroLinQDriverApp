@@ -98,6 +98,35 @@ public class MainActivity extends AppCompatActivity {
 
                 TextView pickUploaction = findViewById(R.id.pickUpLocation);
                 pickUploaction.setText(radioButton.getText().toString());
+
+                final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("PickUpLocation");
+
+                databaseReference.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+
+                        for (DataSnapshot postSnapshot: dataSnapshot.getChildren()){
+
+                            if (postSnapshot.getKey().equals(radioButton.getText().toString())){
+
+                                databaseReference.child(postSnapshot.getKey()).setValue(true);
+
+                            }
+                            else{
+                                databaseReference.child(postSnapshot.getKey()).setValue(false);
+
+                            }
+
+
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
             }
         });
 
@@ -133,36 +162,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-//        /// change this data base with the one you use to store all client names
-//        clientNameDB = FirebaseDatabase.getInstance().getReference("Cars");
-
-//        clientList = new ArrayList<>();
-//
-//
-//        clientNameDB.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                clientList.clear();
-//
-//                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()){
-//
-//                    if (postSnapshot!= null ) {
-//
-//                            String name = postSnapshot.child("plateNumber").getValue().toString();
-//                            clientList.add(name);
-//
-//                    }
-//
-//                }
-//
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//            }
-//        });
 
 
         LocationManager lm = (LocationManager) getSystemService(LOCATION_SERVICE);
