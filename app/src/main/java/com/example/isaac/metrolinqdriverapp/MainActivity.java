@@ -136,7 +136,7 @@ public class MainActivity extends AppCompatActivity {
 
 //        accept_btn = findViewById(R.id.signIn);
 //        editText = findViewById(R.id.actv);
-        carName = findViewById(R.id.carNameTV);
+       // carName = findViewById(R.id.carNameTV);
 //        pickup = findViewById(R.id.pickup);
         dropoff = findViewById(R.id.dropoff);
         startpickup = findViewById(R.id.startPickup);
