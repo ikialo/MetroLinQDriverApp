@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:padding="15dp"
-    android:background="@drawable/top_block"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
@@ -38,15 +37,7 @@
         <!--android:layout_height="wrap_content"-->
         <!--android:text="Confirm Car"/>-->
 
-    <TextView
-        android:layout_marginTop="45dp"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:id="@+id/carNameTV"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="16dp"
-        android:textSize="30sp" />
+
 
 
 
@@ -60,105 +51,166 @@
            <!--android:id="@+id/pickup"-->
            <!--android:layout_width="match_parent"-->
            <!--android:layout_height="wrap_content" />-->
-    <RadioGroup
-        android:id="@+id/radio_location"
+
+
+    <ScrollView
+        android:id="@+id/radio_list_view"
+
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/pickUpLocation"
+        android:layout_alignParentTop="true"
+        android:layout_marginBottom="20dp">
 
-        <RadioButton
-            android:text="Waikele Bus Stop"
-            android:id="@+id/waikele"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+        <LinearLayout
 
-        <RadioButton
-            android:text="Gerehu Stage 2 Main Bus Stop"
-            android:id="@+id/gerehu"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-        <RadioButton
-            android:text="Rainbow Main Bus Stop"
-            android:id="@+id/rainbow"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-        <RadioButton
-            android:text="Ensisi LTI Bus Stop"
-            android:id="@+id/ensisi"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-        <RadioButton
-            android:text="Waigani Main Bus Stop"
-            android:id="@+id/waigani"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-        <RadioButton
-            android:text="Sir Hubert Murray Bus Stop"
-            android:id="@+id/hubertMurray"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-        <RadioButton
-            android:text="Defence Haus Town"
-            android:id="@+id/Defense"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-        <RadioButton
-            android:text="Cuthberthson Haus Town"
-            android:id="@+id/cuthberthson"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-        <RadioButton
-            android:text="No PickUp"
-            android:id="@+id/NA"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-    </RadioGroup>
-
-
-        <TextView
-            android:gravity="center"
-            android:layout_gravity="center"
-            android:layout_marginTop="20dp"
-            android:textSize="20dp"
-            android:id="@+id/pickUpLocation"
-            android:hint="Pick Up Loacation"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+
+            android:orientation="horizontal">
+
+
+
+            <RadioGroup
+                android:id="@+id/radio_location"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/pickUpLocation"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginEnd="14dp"
+                android:layout_marginBottom="57dp">
+
+                <RadioButton
+                    android:id="@+id/waikele"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Waikele Bus Stop" />
+
+                <RadioButton
+                    android:id="@+id/gerehu"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Gerehu Stage 2 Main Bus Stop" />
+
+                <RadioButton
+                    android:id="@+id/rainbow"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Rainbow Main Bus Stop" />
+
+                <RadioButton
+                    android:id="@+id/ensisi"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Ensisi LTI Bus Stop" />
+
+                <RadioButton
+                    android:id="@+id/waigani"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Waigani Main Bus Stop" />
+
+                <RadioButton
+                    android:id="@+id/hubertMurray"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Sir Hubert Murray Bus Stop" />
+
+                <RadioButton
+                    android:id="@+id/Defense"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Defence Haus Town" />
+
+                <RadioButton
+                    android:id="@+id/cuthberthson"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Cuthberthson Haus Town" />
+
+                <RadioButton
+                    android:id="@+id/NA"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="No PickUp" />
+
+            </RadioGroup>
+
+
+
+
+        </LinearLayout>
+
+    </ScrollView>
+
+
+
+    <TextView
+
+        android:id="@+id/pickUpLocation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/submit"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_gravity="center"
+        android:layout_marginStart="28dp"
+        android:layout_marginEnd="30dp"
+        android:layout_marginBottom="51dp"
+        android:gravity="center"
+        android:hint="Pick Up Loacation"
+        android:textSize="20dp" />
 
 
     <Button
 
-        android:layout_marginTop="10dp"
-        android:background="@color/colorMetroYello"
+
         android:id="@+id/submit"
-        android:text="Notify"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/startStop"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="14dp"
+        android:layout_marginBottom="10dp"
+        android:background="@color/colorMetroYello"
+        android:text="Notify" />
 
 
     <LinearLayout
-        android:orientation="horizontal"
+        android:id="@+id/startStop"
         android:layout_width="match_parent"
-        android:weightSum="100"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="14dp"
+        android:layout_marginBottom="43dp"
+        android:orientation="horizontal"
+        android:weightSum="100">
 
         <Button
-            android:layout_weight="50"
-            android:layout_marginTop="60dp"
-            android:background="@color/colorMetroYello"
             android:id="@+id/dropoff"
-            android:enabled="false"
-            android:text="drop offs Done"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-        <Button
+            android:layout_height="wrap_content"
             android:layout_weight="50"
-            android:layout_marginTop="60dp"
             android:background="@color/colorMetroYello"
+            android:enabled="false"
+            android:text="drop offs Done" />
+
+        <Button
             android:id="@+id/startPickup"
-            android:text="start pick up"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_weight="50"
+            android:background="@color/colorMetroYello"
+            android:text="start pick up" />
 
 
     </LinearLayout>
@@ -167,4 +219,4 @@
 
 
 
-</LinearLayout>
+</RelativeLayout>
